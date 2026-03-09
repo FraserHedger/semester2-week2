@@ -14,10 +14,21 @@ def customer_tickets(conn, customer_id):
     """
     Return a list of tuples:
     (film_title, screen, price)
-
+    
     Include only tickets purchased by the given customer_id.
     Order results by film title alphabetically.
     """
+
+    query = """
+    SELECT f.title, s.screen, t.price
+    FROM tickets t
+    JOIN screenings s ON t.screening_id = s.screening_id
+    JOIN films f ON s.film_id = f.film_id
+    WHERE t.customer_id = ?
+    ORDER BY f.title
+    """
+    cursor = conn.execute((query,choice,))
+    return cursor.fetchone()
     pass
 
 
@@ -28,6 +39,10 @@ def screening_sales(conn):
 
     Include all screenings, even if tickets_sold is 0.
     Order results by tickets_sold descending.
+    """
+    query = """
+    SELECT s.screening_id, f.title, COUNT(t.ticket_id) As Ticketssold
+    FROM
     """
     pass
 
