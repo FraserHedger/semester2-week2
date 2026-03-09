@@ -57,22 +57,20 @@ def top_customers_by_spend(conn, limit):
     """
     Return a list of tuples:
     (customer_name, total_spent)
-
     total_spent is the sum of ticket prices per customer.
     Only include customers who have bought at least one ticket.
     Order by total_spent descending.
     Limit the number of rows returned to `limit`.
     """
-
     query = """
     SELECT c.customer_name, SUM(t.price) AS total_spent
-    WHERE tickets t 
-    LEFT JOIN customers c ON t.customer_id = c.customer_id
-    
-
-
-
-
+    FROM tickets t
+    INNER JOIN customers c ON t.customer_id = c.customer_id
+    GROUP BY c.customer_name
+    ORDER BY total_spent DESC
+    LIMIT ?
     """
+    cursor = conn.execute(query, (limit,))
+    return cursor.fetchall()
 
-    pass
+    
